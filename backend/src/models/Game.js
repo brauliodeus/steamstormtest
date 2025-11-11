@@ -8,7 +8,7 @@ const gameSchema = new mongoose.Schema({
   rating: { type: Number, default: 0 },
   reviews: { type: Number, default: 0 },
   image: { type: String },
-  votes: { type: Number, default: 0 }, // 👈 Nuevo campo para votos
+  votes: { type: Number, default: 0 }, // Nuevo campo para votos
   addedAt: { type: Date, default: Date.now }
 });
 

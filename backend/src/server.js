@@ -23,14 +23,14 @@ const connectDB = async () => {
     try {
         const mongoUri = process.env.MONGO_URI;
         if (!mongoUri) {
-             console.error('❌ Error Crítico: MONGO_URI no está definido. Revisa tu archivo .env.');
+             console.error('Error Crítico: MONGO_URI no está definido. Revisa tu archivo .env.');
              process.exit(1); 
         }
 
         await mongoose.connect(mongoUri);
-        console.log('✅ MongoDB Atlas conectado exitosamente en local.');
+        console.log('MongoDB Atlas conectado exitosamente en local.');
     } catch (error) {
-        console.error('❌ Error al conectar a MongoDB:', error.message);
+        console.error('Error al conectar a MongoDB:', error.message);
         process.exit(1); 
     }
 };
@@ -39,7 +39,7 @@ const connectDB = async () => {
 connectDB();
 
 // -----------------------------------------------------
-// 📦 Rutas
+// Rutas
 // -----------------------------------------------------
 
 // Incluir rutas de autenticación
@@ -52,7 +52,7 @@ app.get('/', (req, res) => {
 
 
 // -----------------------------------------------------
-// 🚀 Inicialización del Servidor
+// Inicialización del Servidor
 // -----------------------------------------------------
 const PORT = process.env.PORT || 5000;
 app.listen(PORT, () => console.log(`Servidor de desarrollo corriendo en http://localhost:${PORT}`));

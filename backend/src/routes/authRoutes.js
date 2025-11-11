@@ -58,7 +58,7 @@ router.get("/import/:appId", async (req, res) => {
   }
 });
 
-// 🔹 Ruta para votar por un juego 👍 👎
+// 🔹 Ruta para votar por un juego 
 router.post("/vote/:steamId", async (req, res) => {
   const { steamId } = req.params;
   const { vote } = req.body; // +1 o -1
