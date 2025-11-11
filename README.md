@@ -43,4 +43,4 @@ Nuestros correos de contacto son:
 
 - Luis: lcerda2023@alu.uct.cl
 - Braulio: bpalma2025@alu.uct.cl
-- Carlos: csepulveda@alu.uct.cl
+- Carlos: csepulveda2025@alu.uct.cl
