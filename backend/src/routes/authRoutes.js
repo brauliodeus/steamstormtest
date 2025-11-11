@@ -1,84 +1,95 @@
-// src/routes/games.js
-import express from "express";
-import axios from "axios";
-import Game from "../models/Game.js"; 
+// backend/src/routes/authRoutes.js
+import express from 'express';
+import jwt from 'jsonwebtoken';
+import User from '../models/User.js'; 
+import 'dotenv/config'; // Necesario para acceder a JWT_SECRET
 
 const router = express.Router();
 
-//  Obtener todos los juegos (ordenados por rating)
-router.get("/", async (req, res) => {
-  try {
-    const games = await Game.find().sort({ rating: -1 });
-    res.json(games);
-  } catch (error) {
-    console.error("Error al obtener los juegos:", error.message);
-    res.status(500).json({ error: "Error al obtener los juegos" });
-  }
+// Función auxiliar para generar JSON Web Token (JWT)
+const generateToken = (id) => {
+    // Utilizamos la clave secreta definida en el .env
+    return jwt.sign({ id }, process.env.JWT_SECRET, {
+        expiresIn: '30d', // El token expira en 30 días
+    });
+};
+
+// --- RUTA DE REGISTRO (POST /api/auth/register) ---
+router.post('/register', async (req, res) => {
+    // La desestructuración funciona si express.json() se aplica ANTES de esta ruta
+    const { username, email, password } = req.body; 
+
+    try {
+        // 1. Validar si el usuario ya existe
+        const userExists = await User.findOne({ email });
+        if (userExists) {
+            return res.status(400).json({ message: 'El usuario ya existe con este correo electrónico.' });
+        }
+
+        // 2. Crear y guardar el usuario (la contraseña se hashea en el modelo)
+        const user = await User.create({ username, email, password });
+
+        // 3. Respuesta exitosa con Token
+        res.status(201).json({
+            _id: user._id,
+            username: user.username,
+            email: user.email,
+            message: "Registro exitoso.",
+            token: generateToken(user._id), // Genera el token JWT
+        });
+    } catch (error) {
+        // Mongoose Validation Error (ej. falta un campo requerido)
+        res.status(500).json({ 
+            message: "Error en el servidor al registrar el usuario.", 
+            error: error.message 
+        });
+    }
 });
 
-//  Importar un juego desde Steam y guardarlo/actualizarlo en MongoDB
-router.get("/import/:appId", async (req, res) => {
-  const { appId } = req.params;
 
-  try {
-    const response = await axios.get(
-      `https://store.steampowered.com/api/appdetails?appids=${appId}`
-    );
+// --- RUTA DE LOGIN (POST /api/auth/login) ---
+router.post('/login', async (req, res) => {
+    const { email, password } = req.body;
 
-    const data = response.data[appId];
-    if (!data.success) {
-      return res.status(404).json({ error: "Juego no encontrado" });
+    try {
+        console.log(`[DEBUG LOGIN] Intento de login para email: ${email}`); // Debug 1
+
+        // 1. Buscar usuario
+        const user = await User.findOne({ email });
+
+        if (!user) {
+            console.log(`[DEBUG LOGIN] Usuario no encontrado: ${email}`); // Debug 2
+            // Aseguramos el return para que no siga ejecutando
+            return res.status(401).json({ message: 'Correo electrónico o contraseña inválidos.' });
+        }
+        
+        // 2. Validar usuario y contraseña
+        const isMatch = await user.matchPassword(password);
+        
+        console.log(`[DEBUG LOGIN] Contraseña plana recibida: ${password}`); // Debug 3
+        console.log(`[DEBUG LOGIN] Hash en DB: ${user.password.substring(0, 10)}...`); // Debug 4 (muestra parcial del hash)
+        console.log(`[DEBUG LOGIN] Resultado de bcrypt.compare: ${isMatch}`); // Debug 5
+
+        if (isMatch) {
+            // 3. Respuesta exitosa con Token
+            return res.json({ // Usamos return para terminar la ejecución
+                _id: user._id,
+                username: user.username,
+                email: user.email,
+                message: "Inicio de sesión exitoso.",
+                token: generateToken(user._id),
+            });
+        } else {
+            // Aseguramos el return para que no siga ejecutando
+            return res.status(401).json({ message: 'Correo electrónico o contraseña inválidos.' });
+        }
+    } catch (error) {
+        console.error("[DEBUG LOGIN ERROR] Error interno:", error);
+        return res.status(500).json({ // Usamos return para manejar errores internos
+            message: "Error en el servidor durante el inicio de sesión.", 
+            error: error.message 
+        });
     }
-
-    const gameData = data.data;
-
-    // Creamos o actualizamos el juego en MongoDB
-    const game = await Game.findOneAndUpdate(
-      { steamId: appId },
-      {
-        name: gameData.name,
-        steamId: appId,
-        genre: gameData.genres
-          ? gameData.genres.map((g) => g.description).join(", ")
-          : "Desconocido",
-        price: gameData.price_overview
-          ? gameData.price_overview.final / 100
-          : 0,
-        image: gameData.header_image,
-        rating: Math.floor(Math.random() * 5) + 1,
-        reviews: Math.floor(Math.random() * 5000) + 100,
-      },
-      { upsert: true, new: true }
-    );
-
-    res.json(game);
-  } catch (error) {
-    console.error("Error al obtener datos de Steam:", error.message);
-    res.status(500).json({ error: "Error al consultar la API de Steam" });
-  }
-});
-
-// 🔹 Ruta para votar por un juego 
-router.post("/vote/:steamId", async (req, res) => {
-  const { steamId } = req.params;
-  const { vote } = req.body; // +1 o -1
-
-  try {
-    const game = await Game.findOneAndUpdate(
-      { steamId },
-      { $inc: { votes: vote } },
-      { new: true }
-    );
-
-    if (!game) {
-      return res.status(404).json({ error: "Juego no encontrado" });
-    }
-
-    res.json({ message: "Voto registrado", votes: game.votes });
-  } catch (error) {
-    console.error("Error al registrar voto:", error.message);
-    res.status(500).json({ error: "Error al registrar voto" });
-  }
 });
 
 export default router;
