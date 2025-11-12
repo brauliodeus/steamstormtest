@@ -1,58 +1,47 @@
-// backend/src/server.js
+// Importaciones de librerías usando CommonJS
+const express = require('express');
+const mongoose = require('mongoose');
+const cors = require('cors');
+const dotenv = require('dotenv');
+const path = require('path'); // <--- CRÍTICO: Módulo 'path' para resolver la ruta
 
-import express from 'express';
-import mongoose from 'mongoose';
-import 'dotenv/config'; // Para cargar el archivo .env
-import cors from 'cors'; 
+// Configuración para cargar variables de entorno desde .env
+// Usamos path.resolve(__dirname) para garantizar que el archivo .env se encuentre en la carpeta padre (backend).
+dotenv.config({ path: path.resolve(__dirname, '..', '.env') }); 
 
-// Importamos las rutas
-import authRoutes from './routes/authRoutes.js'; 
+// Importaciones de rutas y modelos
+const gamesRouter = require('./routes/games'); // Tu router original de juegos
+const authRouter = require('./routes/authRoutes'); // Router de autenticación
+
+// Verificación de carga de la URI antes de la conexión (DEBUG)
+console.log("URI intentando cargar:", process.env.MONGO_URI ? "Cargada exitosamente." : "FALLO: URI NO ENCONTRADA.");
 
 const app = express();
 
-// MIDDLEWARES GENERALES
-// 1. Configuración de CORS para permitir la conexión desde el frontend local
-app.use(cors()); 
+// Middleware
+app.use(cors()); // Permite peticiones de origen cruzado
+app.use(express.json()); // Permite leer el cuerpo JSON de las peticiones
 
-// 2. MIDDLEWARE CRÍTICO: Permite que Express lea JSON en el cuerpo de la petición (req.body)
-app.use(express.json()); 
-
-
-// Función para establecer la conexión a la Base de Datos
-const connectDB = async () => {
-    try {
-        const mongoUri = process.env.MONGO_URI;
-        if (!mongoUri) {
-             console.error('Error Crítico: MONGO_URI no está definido. Revisa tu archivo .env.');
-             process.exit(1); 
-        }
-
-        await mongoose.connect(mongoUri);
-        console.log('MongoDB Atlas conectado exitosamente en local.');
-    } catch (error) {
-        console.error('Error al conectar a MongoDB:', error.message);
-        process.exit(1); 
-    }
-};
-
-// Establecer la conexión al inicio del servidor
-connectDB();
-
-// -----------------------------------------------------
 // Rutas
-// -----------------------------------------------------
+app.use("/api/games", gamesRouter); // Ruta original
+app.use("/api/auth", authRouter); // Rutas de autenticación
 
-// Incluir rutas de autenticación
-app.use('/api/auth', authRoutes); 
-
-// Ruta principal de prueba
-app.get('/', (req, res) => {
-    res.send('Backend SteamStorm funcionando.');
+// Ruta simple para verificar el servidor
+app.get("/", (req, res) => {
+  res.send("Servidor SteamStorm funcionando correctamente, incluyendo autenticación.");
 });
 
+// Conexión a MongoDB (usando Promesas)
+mongoose
+  .connect(process.env.MONGO_URI)
+  .then(() => {
+    console.log("Conectado a MongoDB");
 
-// -----------------------------------------------------
-// Inicialización del Servidor
-// -----------------------------------------------------
-const PORT = process.env.PORT || 5000;
-app.listen(PORT, () => console.log(`Servidor de desarrollo corriendo en http://localhost:${PORT}`));
+    // Escuchar en el puerto 3000
+    const PORT = process.env.PORT || 3000;
+    app.listen(PORT, "0.0.0.0", () => {
+      console.log(`Servidor corriendo en el puerto ${PORT}`);
+      console.log(`Rutas de Autenticación: http://localhost:${PORT}/api/auth/register`);
+    });
+  })
+  .catch((error) => console.error("Error al conectar MongoDB:", error.message));

@@ -1,0 +1,524 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SteamStorm | Ranking Global de Steam</title>
+    <!-- Carga de Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Carga de Font Awesome para iconos -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <style>
+        body { font-family: 'Inter', sans-serif; background-color: #1a202c; color: #e2e8f0; } /* Dark background, light text */
+        .card-bg { background-color: #2d3748; } /* bg-gray-700 */
+        .header-bg { background-image: linear-gradient(to right, #1a202c, #2d3748, #1a202c); }
+        /* Clases para ocultar/mostrar secciones */
+        .hidden-section { display: none; }
+        .visible-section { display: block; }
+
+        /* Estilo para las tarjetas del ranking */
+        .ranking-card {
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+            position: relative; /* Necesario para la posición absoluta del # */
+        }
+        .ranking-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.5);
+        }
+    </style>
+</head>
+<body>
+
+    <!-- Navbar -->
+    <nav class="bg-gray-900 p-4 shadow-lg sticky top-0 z-50">
+        <div class="container mx-auto flex justify-between items-center">
+            <!-- Logo -->
+            <a href="#" id="nav-home" class="text-white text-2xl font-bold hover:text-green-400 transition duration-300">SteamStorm</a>
+            
+            <!-- Links de Navegación -->
+            <div class="flex items-center space-x-6">
+                <a href="#" id="nav-ranking" class="text-gray-300 hover:text-white transition duration-300">Ranking</a>
+                <a href="#" id="nav-donations" class="text-gray-300 hover:text-white transition duration-300">Donaciones</a>
+                
+                <!-- Botón de Login/Register (Visible si no está autenticado) -->
+                <a href="#" id="nav-login-register" class="text-gray-300 hover:text-white transition duration-300">Login</a>
+                
+                <!-- Menú de Usuario (Visible si está autenticado) -->
+                <div id="user-menu-wrapper" class="relative hidden">
+                    <button id="user-menu-button" class="flex items-center text-gray-300 hover:text-white transition duration-300 focus:outline-none">
+                        <i class="fas fa-user-circle text-xl mr-2"></i>
+                        <span id="nav-username-display" class="font-semibold"></span>
+                        <i class="fas fa-caret-down ml-1"></i>
+                    </button>
+                    <div id="user-dropdown" class="absolute right-0 mt-2 w-48 bg-gray-800 rounded-md shadow-lg py-1 hidden z-10">
+                        <a href="#" class="block px-4 py-2 text-sm text-gray-300 hover:bg-gray-700">Perfil</a>
+                        <a href="#" class="block px-4 py-2 text-sm text-gray-300 hover:bg-gray-700">Configuración</a>
+                        <button id="nav-logout" class="block w-full text-left px-4 py-2 text-sm text-red-400 hover:bg-gray-700">Cerrar Sesión</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Contenido Principal -->
+    <main class="container mx-auto mt-8 p-4 min-h-[calc(100vh-160px)]">
+        
+        <!-- 1. Sección de Inicio (Home) -->
+        <section id="home-section" class="visible-section text-center py-20 bg-gray-800 rounded-lg shadow-xl">
+            <h1 class="text-5xl font-extrabold text-white mb-4">Bienvenido a SteamStorm</h1>
+            <p class="text-xl text-gray-400 mb-8">Explora los rankings y descubre los juegos más populares de Steam.</p>
+            <img src="https://placehold.co/800x400/1e293b/d1d5db?text=SteamStorm+Portal" alt="SteamStorm Banner" class="mx-auto rounded-lg shadow-md max-w-full h-auto">
+        </section>
+
+        <!-- 2. Sección de Ranking (Privada/Principal) -->
+        <section id="ranking-section" class="hidden-section p-8 rounded-xl shadow-2xl">
+            <h1 class="text-4xl font-extrabold text-green-400 mb-2 text-center">Ranking Global de Steam</h1>
+            <p class="text-lg text-gray-400 mb-8 text-center">Juegos más jugados por el pico de usuarios concurrentes.</p>
+
+            <div id="ranking-grid" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
+                <!-- Tarjetas de Juego (Datos Simulados) -->
+
+                <div class="ranking-card card-bg rounded-xl shadow-lg overflow-hidden">
+                    <img src="https://placehold.co/600x300/1e293b/d1d5db?text=CS2" alt="Counter-Strike 2" class="w-full h-40 object-cover">
+                    <div class="p-4 relative">
+                        <span class="text-xs font-bold bg-green-600 text-white px-2 py-0.5 rounded-full absolute -top-12 right-0">#1</span>
+                        <h2 class="text-xl font-bold text-white mb-2">Counter-Strike 2</h2>
+                        <p class="text-sm text-gray-400 mb-3">El legendario shooter táctico en primera persona, esencial en el mundo de los esports.</p>
+                        <div class="flex justify-between items-center text-sm mt-3">
+                            <span class="text-blue-400 font-semibold"><i class="fas fa-users mr-1"></i> 1.4M</span>
+                            <span class="text-green-400 font-semibold"><i class="fas fa-thumbs-up mr-1"></i> Muy Positivas</span>
+                        </div>
+                        <p class="text-xs text-gray-500 mt-1">Precio: Gratis | Reseñas: 2.1M</p>
+                    </div>
+                </div>
+
+                <div class="ranking-card card-bg rounded-xl shadow-lg overflow-hidden">
+                    <img src="https://placehold.co/600x300/1e293b/d1d5db?text=Dota+2" alt="Dota 2" class="w-full h-40 object-cover">
+                    <div class="p-4 relative">
+                        <span class="text-xs font-bold bg-green-600 text-white px-2 py-0.5 rounded-full absolute -top-12 right-0">#2</span>
+                        <h2 class="text-xl font-bold text-white mb-2">Dota 2</h2>
+                        <p class="text-sm text-gray-400 mb-3">Gigante del género MOBA. Un juego de estrategia profunda con alta curva de aprendizaje.</p>
+                        <div class="flex justify-between items-center text-sm mt-3">
+                            <span class="text-blue-400 font-semibold"><i class="fas fa-users mr-1"></i> 800K</span>
+                            <span class="text-green-400 font-semibold"><i class="fas fa-thumbs-up mr-1"></i> Mayormente Positivas</span>
+                        </div>
+                        <p class="text-xs text-gray-500 mt-1">Precio: Gratis | Reseñas: 1.8M</p>
+                    </div>
+                </div>
+
+                <div class="ranking-card card-bg rounded-xl shadow-lg overflow-hidden">
+                    <img src="https://placehold.co/600x300/1e293b/d1d5db?text=PUBG" alt="PUBG: BATTLEGROUNDS" class="w-full h-40 object-cover">
+                    <div class="p-4 relative">
+                        <span class="text-xs font-bold bg-green-600 text-white px-2 py-0.5 rounded-full absolute -top-12 right-0">#3</span>
+                        <h2 class="text-xl font-bold text-white mb-2">PUBG: BATTLEGROUNDS</h2>
+                        <p class="text-sm text-gray-400 mb-3">El pionero de los Battle Royale. Desciende, saquea y sobrevive para ser el último en pie.</p>
+                        <div class="flex justify-between items-center text-sm mt-3">
+                            <span class="text-blue-400 font-semibold"><i class="fas fa-users mr-1"></i> 450K</span>
+                            <span class="text-yellow-400 font-semibold"><i class="fas fa-meh mr-1"></i> Variadas</span>
+                        </div>
+                        <p class="text-xs text-gray-500 mt-1">Precio: Gratis | Reseñas: 1.5M</p>
+                    </div>
+                </div>
+                
+                <div class="ranking-card card-bg rounded-xl shadow-lg overflow-hidden">
+                    <img src="https://placehold.co/600x300/1e293b/d1d5db?text=Apex+Legends" alt="Apex Legends" class="w-full h-40 object-cover">
+                    <div class="p-4 relative">
+                        <span class="text-xs font-bold bg-green-600 text-white px-2 py-0.5 rounded-full absolute -top-12 right-0">#4</span>
+                        <h2 class="text-xl font-bold text-white mb-2">Apex Legends</h2>
+                        <p class="text-sm text-gray-400 mb-3">Battle Royale por escuadrones de Respawn, con héroes únicos y habilidades dinámicas.</p>
+                        <div class="flex justify-between items-center text-sm mt-3">
+                            <span class="text-blue-400 font-semibold"><i class="fas fa-users mr-1"></i> 300K</span>
+                            <span class="text-green-400 font-semibold"><i class="fas fa-thumbs-up mr-1"></i> Muy Positivas</span>
+                        </div>
+                        <p class="text-xs text-gray-500 mt-1">Precio: Gratis | Reseñas: 800K</p>
+                    </div>
+                </div>
+
+                <div class="ranking-card card-bg rounded-xl shadow-lg overflow-hidden">
+                    <img src="https://placehold.co/600x300/1e293b/d1d5db?text=BG3" alt="Baldur's Gate 3" class="w-full h-40 object-cover">
+                    <div class="p-4 relative">
+                        <span class="text-xs font-bold bg-green-600 text-white px-2 py-0.5 rounded-full absolute -top-12 right-0">#5</span>
+                        <h2 class="text-xl font-bold text-white mb-2">Baldur's Gate 3</h2>
+                        <p class="text-sm text-gray-400 mb-3">Juego de rol masivo basado en Dungeons & Dragons, elogiado por su libertad y narrativa.</p>
+                        <div class="flex justify-between items-center text-sm mt-3">
+                            <span class="text-blue-400 font-semibold"><i class="fas fa-users mr-1"></i> 250K</span>
+                            <span class="text-green-400 font-semibold"><i class="fas fa-star mr-1"></i> Extremadamente Positivas</span>
+                        </div>
+                        <p class="text-xs text-gray-500 mt-1">Precio: $59.99 | Reseñas: 500K</p>
+                    </div>
+                </div>
+
+                <div class="ranking-card card-bg rounded-xl shadow-lg overflow-hidden">
+                    <img src="https://placehold.co/600x300/1e293b/d1d5db?text=RUST" alt="Rust" class="w-full h-40 object-cover">
+                    <div class="p-4 relative">
+                        <span class="text-xs font-bold bg-green-600 text-white px-2 py-0.5 rounded-full absolute -top-12 right-0">#6</span>
+                        <h2 class="text-xl font-bold text-white mb-2">Rust</h2>
+                        <p class="text-sm text-gray-400 mb-3">Juego de supervivencia multijugador brutal, donde el objetivo es sobrevivir a la naturaleza y a otros jugadores.</p>
+                        <div class="flex justify-between items-center text-sm mt-3">
+                            <span class="text-blue-400 font-semibold"><i class="fas fa-users mr-1"></i> 220K</span>
+                            <span class="text-green-400 font-semibold"><i class="fas fa-thumbs-up mr-1"></i> Mayormente Positivas</span>
+                        </div>
+                        <p class="text-xs text-gray-500 mt-1">Precio: $39.99 | Reseñas: 700K</p>
+                    </div>
+                </div>
+
+                <div class="ranking-card card-bg rounded-xl shadow-lg overflow-hidden">
+                    <img src="https://placehold.co/600x300/1e293b/d1d5db?text=GTA+V" alt="Grand Theft Auto V" class="w-full h-40 object-cover">
+                    <div class="p-4 relative">
+                        <span class="text-xs font-bold bg-green-600 text-white px-2 py-0.5 rounded-full absolute -top-12 right-0">#7</span>
+                        <h2 class="text-xl font-bold text-white mb-2">Grand Theft Auto V</h2>
+                        <p class="text-sm text-gray-400 mb-3">El juego de mundo abierto de Rockstar, conocido por su campaña y su exitoso modo online.</p>
+                        <div class="flex justify-between items-center text-sm mt-3">
+                            <span class="text-blue-400 font-semibold"><i class="fas fa-users mr-1"></i> 180K</span>
+                            <span class="text-green-400 font-semibold"><i class="fas fa-thumbs-up mr-1"></i> Muy Positivas</span>
+                        </div>
+                        <p class="text-xs text-gray-500 mt-1">Precio: $29.99 | Reseñas: 1.4M</p>
+                    </div>
+                </div>
+
+                <div class="ranking-card card-bg rounded-xl shadow-lg overflow-hidden">
+                    <img src="https://placehold.co/600x300/1e293b/d1d5db?text=Helldivers+2" alt="Helldivers 2" class="w-full h-40 object-cover">
+                    <div class="p-4 relative">
+                        <span class="text-xs font-bold bg-green-600 text-white px-2 py-0.5 rounded-full absolute -top-12 right-0">#8</span>
+                        <h2 class="text-xl font-bold text-white mb-2">Helldivers 2</h2>
+                        <p class="text-sm text-gray-400 mb-3">Shooter cooperativo que se centra en la guerra intergaláctica por la Super-Tierra.</p>
+                        <div class="flex justify-between items-center text-sm mt-3">
+                            <span class="text-blue-400 font-semibold"><i class="fas fa-users mr-1"></i> 150K</span>
+                            <span class="text-green-400 font-semibold"><i class="fas fa-star mr-1"></i> Extremadamente Positivas</span>
+                        </div>
+                        <p class="text-xs text-gray-500 mt-1">Precio: $39.99 | Reseñas: 400K</p>
+                    </div>
+                </div>
+                
+                <div class="ranking-card card-bg rounded-xl shadow-lg overflow-hidden">
+                    <img src="https://placehold.co/600x300/1e293b/d1d5db?text=ARK" alt="ARK: Survival Evolved" class="w-full h-40 object-cover">
+                    <div class="p-4 relative">
+                        <span class="text-xs font-bold bg-green-600 text-white px-2 py-0.5 rounded-full absolute -top-12 right-0">#9</span>
+                        <h2 class="text-xl font-bold text-white mb-2">ARK: Survival Evolved</h2>
+                        <p class="text-sm text-gray-400 mb-3">Aventura de supervivencia multijugador donde tienes que domar dinosaurios y construir bases.</p>
+                        <div class="flex justify-between items-center text-sm mt-3">
+                            <span class="text-blue-400 font-semibold"><i class="fas fa-users mr-1"></i> 130K</span>
+                            <span class="text-yellow-400 font-semibold"><i class="fas fa-meh mr-1"></i> Variadas</span>
+                        </div>
+                        <p class="text-xs text-gray-500 mt-1">Precio: $19.99 | Reseñas: 850K</p>
+                    </div>
+                </div>
+                
+                <div class="ranking-card card-bg rounded-xl shadow-lg overflow-hidden">
+                    <img src="https://placehold.co/600x300/1e293b/d1d5db?text=R6S" alt="Rainbow Six Siege" class="w-full h-40 object-cover">
+                    <div class="p-4 relative">
+                        <span class="text-xs font-bold bg-green-600 text-white px-2 py-0.5 rounded-full absolute -top-12 right-0">#10</span>
+                        <h2 class="text-xl font-bold text-white mb-2">Rainbow Six Siege</h2>
+                        <p class="text-sm text-gray-400 mb-3">Shooter táctico 5v5 con entornos destructibles y enfoque en la estrategia y coordinación.</p>
+                        <div class="flex justify-between items-center text-sm mt-3">
+                            <span class="text-blue-400 font-semibold"><i class="fas fa-users mr-1"></i> 100K</span>
+                            <span class="text-green-400 font-semibold"><i class="fas fa-thumbs-up mr-1"></i> Muy Positivas</span>
+                        </div>
+                        <p class="text-xs text-gray-500 mt-1">Precio: $9.99 | Reseñas: 750K</p>
+                    </div>
+                </div>
+                
+            </div>
+            
+            <div class="mt-12 text-center">
+                <button id="ranking-logout-button" class="bg-red-600 hover:bg-red-700 text-white font-semibold py-2 px-6 rounded-lg shadow-md transition duration-200">
+                    Cerrar Sesión
+                </button>
+            </div>
+        </section>
+
+        <!-- 3. Sección de Autenticación (Login/Registro) -->
+        <section id="auth-section" class="hidden-section w-full max-w-md mx-auto bg-gray-800 p-8 rounded-xl shadow-2xl transition-all duration-300">
+            
+            <h1 id="auth-form-title" class="text-3xl font-bold text-white text-center mb-6">Login</h1>
+            
+            <div id="auth-message-area" class="text-center mb-4 p-2 rounded-lg text-sm transition-all duration-300 hidden"></div>
+
+            <!-- Formulario con novalidate para que JS maneje la validación -->
+            <form id="auth-full-form" class="space-y-4" novalidate>
+                <div id="auth-username-field">
+                    <label for="auth-username" class="block text-sm font-medium text-gray-300 mb-1">Nombre de Usuario</label>
+                    <input type="text" id="auth-username" class="w-full px-4 py-2 bg-gray-700 border border-gray-600 rounded-lg text-white focus:outline-none focus:ring-2 focus:ring-blue-500">
+                </div>
+                <div>
+                    <label for="auth-email" class="block text-sm font-medium text-gray-300 mb-1">Correo Electrónico</label>
+                    <input type="email" id="auth-email" class="w-full px-4 py-2 bg-gray-700 border border-gray-600 rounded-lg text-white focus:outline-none focus:ring-2 focus:ring-blue-500" required>
+                </div>
+                <div>
+                    <label for="auth-password" class="block text-sm font-medium text-gray-300 mb-1">Contraseña</label>
+                    <input type="password" id="auth-password" class="w-full px-4 py-2 bg-gray-700 border border-gray-600 rounded-lg text-white focus:outline-none focus:ring-2 focus:ring-blue-500" required>
+                </div>
+                
+                <button type="submit" id="auth-submit-button" class="w-full bg-blue-600 hover:bg-blue-700 text-white font-semibold py-3 rounded-lg shadow-md transition duration-200">
+                    Acceder
+                </button>
+            </form>
+            
+            <div class="mt-4 text-center text-gray-400">
+                <button id="auth-toggle-mode" class="text-blue-400 hover:text-blue-300 text-sm focus:outline-none">
+                    ¿No tienes cuenta? Regístrate
+                </button>
+            </div>
+        </section>
+
+        <!-- 4. Sección de Donaciones -->
+        <section id="donations-section" class="hidden-section text-center py-20 bg-gray-800 rounded-lg shadow-xl">
+            <h2 class="text-4xl font-extrabold text-white mb-4">Apoya a SteamStorm</h2>
+            <p class="text-lg text-gray-400 mb-8">Tu apoyo nos ayuda a mantener y mejorar esta plataforma. ¡Gracias!</p>
+            <button class="bg-purple-600 hover:bg-purple-700 text-white font-bold py-3 px-8 rounded-lg text-xl shadow-md">
+                Donar ahora <i class="fas fa-heart ml-2"></i>
+            </button>
+        </section>
+
+    </main>
+
+    <!-- Footer -->
+    <footer class="bg-gray-900 p-4 mt-8 text-center text-gray-500 text-sm shadow-inner">
+        &copy; 2025 SteamStorm. Todos los derechos reservados.
+    </footer>
+
+    <script>
+        // CONFIGURACIÓN: PUERTO 3000
+        const API_BASE_URL = 'http://localhost:3000/api/auth';
+
+        // --- Elementos del DOM para la navegación ---
+        const homeSection = document.getElementById('home-section');
+        const rankingSection = document.getElementById('ranking-section');
+        const authSection = document.getElementById('auth-section');
+        const donationsSection = document.getElementById('donations-section');
+        const allSections = [homeSection, rankingSection, authSection, donationsSection];
+
+        // Navbar Links
+        const navHome = document.getElementById('nav-home');
+        const navRanking = document.getElementById('nav-ranking');
+        const navLoginRegister = document.getElementById('nav-login-register'); 
+        const navDonations = document.getElementById('nav-donations');
+
+        // User Menu in Navbar
+        const userMenuWrapper = document.getElementById('user-menu-wrapper');
+        const userMenuButton = document.getElementById('user-menu-button');
+        const userDropdown = document.getElementById('user-dropdown');
+        const navUsernameDisplay = document.getElementById('nav-username-display');
+        const navLogoutButton = document.getElementById('nav-logout');
+
+        // --- Elementos del DOM para Autenticación ---
+        const authFormTitle = document.getElementById('auth-form-title');
+        const authFullForm = document.getElementById('auth-full-form');
+        const authUsernameField = document.getElementById('auth-username-field');
+        const authToggleModeButton = document.getElementById('auth-toggle-mode');
+        const authSubmitButton = document.getElementById('auth-submit-button');
+        const authMessageArea = document.getElementById('auth-message-area');
+
+        // Form Fields
+        const authUsernameInput = document.getElementById('auth-username');
+        const authEmailInput = document.getElementById('auth-email');
+        const authPasswordInput = document.getElementById('auth-password');
+
+        let isRegisterMode = false; // Por defecto el formulario de autenticación inicia en Login
+
+
+        // --- Funciones de Utilidad ---
+
+        function showMessage(type, message) {
+            authMessageArea.textContent = message;
+            authMessageArea.classList.remove('hidden', 'bg-red-900/50', 'bg-green-900/50', 'text-red-300', 'text-green-300');
+
+            if (type === 'error') {
+                authMessageArea.classList.remove('hidden');
+                authMessageArea.classList.add('bg-red-900/50', 'text-red-300');
+            } else if (type === 'success') {
+                authMessageArea.classList.remove('hidden');
+                authMessageArea.classList.add('bg-green-900/50', 'text-green-300');
+            }
+        }
+
+        function hideMessage() {
+            authMessageArea.classList.add('hidden');
+        }
+
+        // --- Manejo de Vistas ---
+
+        function showSection(sectionToShow) {
+            allSections.forEach(section => {
+                if (section === sectionToShow) {
+                    section.classList.remove('hidden-section');
+                    section.classList.add('visible-section');
+                } else {
+                    section.classList.remove('visible-section');
+                    section.classList.add('hidden-section');
+                }
+            });
+        }
+
+        function updateAuthFormUI() {
+            hideMessage();
+            // Limpiar campos antes de cambiar
+            authEmailInput.value = '';
+            authPasswordInput.value = '';
+            authUsernameInput.value = '';
+
+            if (isRegisterMode) {
+                authFormTitle.textContent = 'Registro';
+                authSubmitButton.textContent = 'Registrarse';
+                authToggleModeButton.textContent = '¿Ya tienes una cuenta? Inicia Sesión';
+                authUsernameField.classList.remove('hidden');
+            } else {
+                authFormTitle.textContent = 'Login';
+                authSubmitButton.textContent = 'Acceder';
+                authToggleModeButton.textContent = '¿No tienes cuenta? Regístrate';
+                authUsernameField.classList.add('hidden');
+            }
+        }
+
+        function updateNavbarForAuth(isAuthenticated, username = null) {
+            if (isAuthenticated) {
+                navLoginRegister.classList.add('hidden'); // Oculta "Login"
+                userMenuWrapper.classList.remove('hidden'); // Muestra menú de usuario
+                navUsernameDisplay.textContent = username;
+            } else {
+                navLoginRegister.classList.remove('hidden'); // Muestra "Login"
+                userMenuWrapper.classList.add('hidden'); // Oculta menú de usuario
+                navUsernameDisplay.textContent = '';
+            }
+        }
+
+        function loadInitialState() {
+            const user = JSON.parse(localStorage.getItem('user'));
+            const token = localStorage.getItem('token');
+
+            if (token && user) {
+                updateNavbarForAuth(true, user.username);
+                // Si el usuario está autenticado, por defecto se muestra el ranking
+                showSection(rankingSection); 
+            } else {
+                updateNavbarForAuth(false);
+                // Si no está autenticado, por defecto se muestra la página de inicio
+                showSection(homeSection); 
+            }
+        }
+
+        // --- Manejo de la Lógica de Autenticación ---
+
+        async function handleAuth(event) {
+            event.preventDefault(); // Detiene el envío nativo del formulario
+            hideMessage();
+
+            const email = authEmailInput.value.trim();
+            const password = authPasswordInput.value;
+            const username = authUsernameInput.value.trim(); 
+
+            // Validaciones de formulario en el frontend
+            if (isRegisterMode && !username) {
+                showMessage('error', 'El nombre de usuario es requerido para el registro.');
+                return;
+            }
+            if (!email || !password) {
+                 showMessage('error', 'El correo y la contraseña son requeridos.');
+                return;
+            }
+
+
+            let endpoint = isRegisterMode ? 'register' : 'login';
+            let data = { email, password };
+            
+            if (isRegisterMode) {
+                data.username = username;
+            }
+
+            try {
+                authSubmitButton.disabled = true;
+                authSubmitButton.textContent = 'Cargando...';
+
+                const response = await fetch(`${API_BASE_URL}/${endpoint}`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify(data),
+                });
+
+                const result = await response.json();
+
+                if (!response.ok) {
+                    let errorMessage = result.message || 'Error desconocido del servidor.';
+                    if (result.error && result.error.includes('validation failed')) {
+                        errorMessage = 'Registro inválido. Verifique que todos los campos estén llenos y el correo sea único.';
+                    } else if (response.status === 401) {
+                        errorMessage = 'Credenciales inválidas. Intente de nuevo.';
+                    }
+
+                    showMessage('error', `ERROR: ${errorMessage}`);
+                    return;
+                }
+
+                // ÉXITO: Guardar token y datos del usuario
+                localStorage.setItem('token', result.token);
+                localStorage.setItem('user', JSON.stringify({ username: result.username, email: result.email }));
+
+                showMessage('success', result.message || 'Operación exitosa.');
+                
+                // Redirección inmediata al Ranking
+                updateNavbarForAuth(true, result.username);
+                showSection(rankingSection);
+                hideMessage(); // Ocultar mensaje de éxito
+                
+            } catch (error) {
+                console.error('Fetch Error:', error);
+                showMessage('error', 'ERROR: No se pudo conectar con el servidor. Asegúrate de que el backend esté corriendo en http://localhost:3000.');
+            } finally {
+                authSubmitButton.disabled = false;
+                authSubmitButton.textContent = isRegisterMode ? 'Registrarse' : 'Acceder';
+            }
+        }
+
+        function handleLogout() {
+            localStorage.clear();
+            updateNavbarForAuth(false);
+            showMessage('success', 'Sesión cerrada exitosamente.');
+            setTimeout(() => {
+                showSection(homeSection); // Volver a la página de inicio
+                hideMessage(); 
+            }, 500);
+        }
+
+        // --- Listeners de Eventos ---
+
+        // Navbar Navigation
+        navHome.addEventListener('click', (e) => { e.preventDefault(); showSection(homeSection); });
+        navRanking.addEventListener('click', (e) => { e.preventDefault(); showSection(rankingSection); });
+        navLoginRegister.addEventListener('click', (e) => { e.preventDefault(); showSection(authSection); isRegisterMode = false; updateAuthFormUI(); });
+        navDonations.addEventListener('click', (e) => { e.preventDefault(); showSection(donationsSection); });
+
+        // Auth form toggling (Login/Register)
+        authToggleModeButton.addEventListener('click', () => {
+            isRegisterMode = !isRegisterMode;
+            updateAuthFormUI();
+        });
+
+        // Auth form submission
+        authFullForm.addEventListener('submit', handleAuth);
+        
+        // Logout buttons
+        navLogoutButton.addEventListener('click', handleLogout);
+        document.getElementById('ranking-logout-button').addEventListener('click', handleLogout); // Logout del ranking
+
+        // Toggle user dropdown
+        userMenuButton.addEventListener('click', (e) => {
+            e.stopPropagation(); 
+            userDropdown.classList.toggle('hidden');
+        });
+
+        // Close dropdown when clicking outside
+        document.addEventListener('click', (e) => {
+            if (!userMenuWrapper.contains(e.target)) {
+                userDropdown.classList.add('hidden');
+            }
+        });
+
+        // --- Inicialización ---
+        loadInitialState();
+        updateAuthFormUI(); 
+
+    </script>
+</body>
+</html>
